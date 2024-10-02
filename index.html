@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>View Increaser</title>
+		<!-- Bootstrap CSS -->
+		<link
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<style>
+			body {
+				background-color: #f8f9fa;
+			}
+
+			/* Add padding for each iframe */
+			.video-wrapper {
+				padding: 15px;
+			}
+
+			/* Ensure the iframe fills the container */
+			iframe {
+				width: 100%;
+				height: 315px;
+				border: none;
+				border-radius: 8px;
+				box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			/* Adjust the button */
+			button {
+				width: 100%;
+				padding: 10px;
+				background-color: #007bff;
+				color: white;
+				border: none;
+				border-radius: 0.25rem;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: #0056b3;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row mt-5">
+				<div class="col-md-6 offset-md-3">
+					<div class="card shadow-sm">
+						<div class="card-header bg-primary text-white text-center">
+							<h4>View Increaser</h4>
+						</div>
+						<div class="card-body">
+							<h5 class="mb-4">Increase views for a YouTube video</h5>
+							<form id="view-increaser-form">
+								<div class="form-group">
+									<input
+										type="url"
+										name="video_url"
+										id="video_url"
+										class="form-control"
+										placeholder="Enter the YouTube video URL"
+										required
+									/>
+								</div>
+								<div class="form-group">
+									<input
+										type="number"
+										name="quantity"
+										id="quantity"
+										class="form-control"
+										placeholder="Enter the number of views"
+										min="1"
+										required
+									/>
+								</div>
+								<button type="button" class="btn btn-primary" onclick="increaseView()">
+									Increase Views
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Video Grid Layout -->
+			<div class="row mt-5" id="video-grid"></div>
+		</div>
+
+		<!-- Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+		<script>
+			// Function to increase views
+			function increaseView() {
+				const video_url = document.getElementById("video_url").value;
+				const quantity = document.getElementById("quantity").value;
+				
+				if (!video_url || !quantity) {
+					alert("Please enter both the video URL and quantity.");
+					return;
+				}
+
+				// Extract the video ID from the URL
+				const videoId = extractVideoId(video_url);
+				if (!videoId) {
+					alert("Please enter a valid YouTube video URL.");
+					return;
+				}
+
+				// Get the video grid container
+				const videoGrid = document.getElementById("video-grid");
+
+				// Clear the grid before adding new iframes
+				videoGrid.innerHTML = "";
+
+				// Add iframes based on the quantity
+				for (let i = 0; i < quantity; i++) {
+					const videoWrapper = document.createElement("div");
+					videoWrapper.className = "col-lg-4 col-md-6 col-sm-12 video-wrapper";
+					
+					// Create iframe and set attributes
+					const iframe = document.createElement("iframe");
+					iframe.src = `https://www.youtube.com/embed/${videoId}`;
+					iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+					iframe.allowFullscreen = true;
+
+					// Append iframe to the wrapper and then to the grid
+					videoWrapper.appendChild(iframe);
+					videoGrid.appendChild(videoWrapper);
+				}
+			}
+
+			// Helper function to extract the video ID from a YouTube URL
+			function extractVideoId(url) {
+				const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+				const match = url.match(regExp);
+				return match && match[2].length == 11 ? match[2] : null;
+			}
+		</script>
+	</body>
+</html>
